@@ -1,8 +1,7 @@
 import json
 import os
-import pickle
 from dotenv import load_dotenv
-from rank_bm25 import BM25Okapi
+from src.backend.load.bm25_manager import BM25Manager
 
 from src.backend.chroma_manager import ChromaManager
 from src.backend.embedder import GoogleEmbedder
@@ -85,22 +84,9 @@ class NotionIngestor:
         Tokenises as '{title} {chunk_text}'.lower().split()
         so title keywords boost keyword search results.
         """
-        tokenised = [
-            f"{c['metadata']['title']} {c['text']}".lower().split()
-            for c in chunks
-        ]
-        bm25 = BM25Okapi(tokenised)
-
-        os.makedirs(os.path.dirname(BM25_INDEX_PATH), exist_ok=True)
-
-        payload = {
-            "bm25":   bm25,
-            "chunks": chunks,
-        }
-        with open(BM25_INDEX_PATH, "wb") as f:
-            pickle.dump(payload, f)
-
-        print(f"  BM25 index saved → {BM25_INDEX_PATH}")
+        bm25_manager = BM25Manager()
+        bm25_manager.build_index(chunks)
+        bm25_manager.save(BM25_INDEX_PATH)
 
     def run_pipeline(self, reset: bool = False) -> None:
         """
