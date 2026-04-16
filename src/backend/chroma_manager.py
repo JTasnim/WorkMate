@@ -4,11 +4,13 @@ import chromadb
 from chromadb.config import Settings
 
 from src.backend.embedder import GoogleEmbedder
+from src.backend.config import get_settings
 
 load_dotenv()
 
 COLLECTION_NAME = "workmate"
-CHROMA_PATH = os.getenv("CHROMA_PATH", "workmate_db/chroma")
+#CHROMA_PATH = os.getenv("CHROMA_PATH", "workmate_db/chroma")
+CHROMA_PATH = get_settings().CHROMA_PATH
 
 
 class ChromaManager:

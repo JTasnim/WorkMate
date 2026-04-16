@@ -3,8 +3,8 @@ import time
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+from src.backend.config import get_settings
 
-load_dotenv()
 
 EMBEDDING_MODEL = "gemini-embedding-001"
 BATCH_SIZE = 100
@@ -13,7 +13,7 @@ BATCH_DELAY = 0.7
 
 class GoogleEmbedder:
     def __init__(self):
-        api_key = os.getenv("GEMINI_API_KEY")
+        api_key = get_settings().GEMINI_API_KEY
         if not api_key:
             raise ValueError("GEMINI_API_KEY not found in environment")
         self.client = genai.Client(api_key=api_key)
